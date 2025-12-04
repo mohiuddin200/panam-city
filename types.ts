@@ -5,6 +5,7 @@ export interface Guest {
   extraGuests: number;
   note?: string;
   timestamp: any; // Firestore timestamp
+  adminReply?: string; // Response from the organizer
 }
 
 export interface FormData {

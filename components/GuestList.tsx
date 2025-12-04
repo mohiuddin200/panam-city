@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { Guest } from '../types';
 
 export const GuestList: React.FC = () => {
   const [guests, setGuests] = useState<Guest[]>([]);
   const [loading, setLoading] = useState(true);
+  const [replyingId, setReplyingId] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState("");
 
   useEffect(() => {
     const q = query(collection(db, 'rsvps'), orderBy('timestamp', 'desc'));
@@ -21,6 +23,22 @@ export const GuestList: React.FC = () => {
 
     return () => unsubscribe();
   }, []);
+
+  const handleReplySubmit = async (guestId: string) => {
+    if (!replyText.trim()) return;
+    
+    try {
+      const guestRef = doc(db, 'rsvps', guestId);
+      await updateDoc(guestRef, {
+        adminReply: replyText
+      });
+      setReplyingId(null);
+      setReplyText("");
+    } catch (error) {
+      console.error("Error updating reply:", error);
+      alert("রিপ্লাই সেভ করা যায়নি। আবার চেষ্টা কর।");
+    }
+  };
 
   if (loading) {
     return <div className="text-center p-8 font-bengali text-xl text-gray-600">লোড হচ্ছে...</div>;
@@ -49,17 +67,17 @@ export const GuestList: React.FC = () => {
         {guests.map((guest) => (
           <div 
             key={guest.id} 
-            className={`p-5 rounded-lg shadow-sm border-l-4 relative overflow-hidden transition hover:shadow-md ${
+            className={`p-5 rounded-lg shadow-sm border-l-4 relative overflow-hidden transition hover:shadow-md flex flex-col justify-between ${
               guest.isComing 
                 ? 'bg-white border-l-green-600 border-t border-r border-b border-gray-200' 
-                : 'bg-gray-100 border-l-gray-500 border-t border-r border-b border-gray-200 opacity-80'
+                : 'bg-gray-100 border-l-gray-500 border-t border-r border-b border-gray-200 opacity-90'
             }`}
           >
              <div className={`absolute top-0 right-0 px-3 py-1 text-xs font-bold text-white rounded-bl-lg ${guest.isComing ? 'bg-green-600' : 'bg-gray-600'}`}>
                 {guest.isComing ? 'যাচ্ছে' : 'যাবে না'}
              </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 mb-4">
               <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-white text-xl shadow-inner ${guest.isComing ? 'bg-panam-brick' : 'bg-gray-500'}`}>
                 {guest.name.charAt(0).toUpperCase()}
               </div>
@@ -73,11 +91,63 @@ export const GuestList: React.FC = () => {
               </div>
             </div>
             
-            {guest.note && (
-              <div className="mt-4 text-sm text-gray-800 bg-gray-50 p-3 rounded italic border border-gray-200">
-                "{guest.note}"
+            <div className="space-y-3">
+              {guest.note && (
+                <div className="text-sm text-gray-800 bg-gray-50 p-3 rounded italic border border-gray-200 relative">
+                  <span className="absolute -top-2 left-2 text-2xl text-gray-300">"</span>
+                  {guest.note}
+                </div>
+              )}
+
+              {/* Admin Reply Display */}
+              {guest.adminReply && (
+                <div className="text-sm text-panam-brick bg-red-50 p-3 rounded border border-red-200 font-semibold ml-4 relative">
+                  <div className="text-xs text-red-400 mb-1">আয়োজকের উত্তর:</div>
+                  "{guest.adminReply}"
+                </div>
+              )}
+
+              {/* Reply Interface */}
+              <div className="pt-2 border-t border-gray-100 mt-2">
+                {!guest.adminReply && replyingId !== guest.id && (
+                  <button 
+                    onClick={() => {
+                      setReplyingId(guest.id!);
+                      setReplyText("");
+                    }}
+                    className="text-xs text-gray-500 hover:text-panam-brick underline font-bold"
+                  >
+                    রিপ্লাই দিন
+                  </button>
+                )}
+
+                {replyingId === guest.id && (
+                  <div className="mt-2 animate-fadeIn">
+                    <input 
+                      type="text" 
+                      value={replyText}
+                      onChange={(e) => setReplyText(e.target.value)}
+                      placeholder="উত্তর লিখুন..." 
+                      className="w-full text-sm p-2 border border-gray-300 rounded mb-2 focus:border-panam-brick focus:outline-none"
+                    />
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={() => handleReplySubmit(guest.id!)}
+                        className="bg-panam-brick text-white text-xs px-3 py-1 rounded hover:bg-red-800"
+                      >
+                        জমা দিন
+                      </button>
+                      <button 
+                        onClick={() => setReplyingId(null)}
+                        className="bg-gray-300 text-gray-700 text-xs px-3 py-1 rounded hover:bg-gray-400"
+                      >
+                        বাতিল
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
+            </div>
           </div>
         ))}
 

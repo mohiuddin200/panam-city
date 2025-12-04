@@ -30,7 +30,6 @@ export const ApplicationLetter: React.FC = () => {
         <div className="bg-orange-50 p-6 rounded-lg border-l-8 border-panam-brick my-6 shadow-sm">
           <p className="font-bold text-panam-brick text-xl mb-2">বিশেষ দ্রষ্টব্য:</p>
           <ul className="list-disc list-inside text-gray-900 space-y-1">
-            <li><strong>সাজিদ</strong> এবং <strong>নেহাল</strong> - তোরা দুইজন এই ট্যুরের ভি.আই.পি (VIP)। তোরা মিস দিলে খবর আছে।</li>
             <li>সাথে ভাবি বা অন্য বন্ধু-বান্ধব থাকলে নির্দ্বিধায় এড করতে পারিস।</li>
             <li>খরচপাতি যার যার, আনন্দ সবার। (তবে বিরিয়ানি খাওয়াইলে না করব না)।</li>
           </ul>
