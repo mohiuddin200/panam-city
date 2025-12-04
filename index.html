@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panam City Tour 2025</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              bengali: ['"Noto Serif Bengali"', 'serif'],
+            },
+            colors: {
+              'panam-paper': '#fffdf5', // Warmer paper
+              'panam-brick': '#9c341a', // Deep Terracotta/Red
+              'panam-charcoal': '#1a1616', // High contrast dark text
+              'panam-gold': '#d97706',
+              'panam-stone': '#e7e5e4',
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        background-color: #d6d3d1; /* stone-300 */
+        background-image: radial-gradient(#bcaaa4 1px, transparent 1px);
+        background-size: 20px 20px;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+    "react/": "https://aistudiocdn.com/react@^19.2.1/",
+    "react": "https://aistudiocdn.com/react@^19.2.1",
+    "firebase/": "https://aistudiocdn.com/firebase@^12.6.0/"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
